@@ -39,7 +39,7 @@ class Main extends Application {
 	}
 
 	public function startSample(window:Window) {
-		var peoteView = new PeoteView(window);
+		var peoteView = new PeoteView(window, true);
 
 		var buffer:Buffer<Elem> = new Buffer<Elem>(4, 4, true);
 		var program = new Program(buffer);

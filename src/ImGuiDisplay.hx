@@ -75,14 +75,10 @@ class ImGuiDisplay extends Display {
 		ImGui.newFrame();
 	}
 
-	public function endFrame(gl:WebGLRenderContext):Void {
+	public function endFrame():Void {
 		ImGui.endFrame();
 
 		ImGui.render();
-
-		gl.viewport(0, 0, this.width, this.height);
-		gl.clearColor(0.75, 1, 0, 1);
-		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		ImGui_Impl.RenderDrawData(ImGui.getDrawData());
 
@@ -108,7 +104,7 @@ class ImGuiDisplay extends Display {
 
 			ImGui.end();
 
-			endFrame(gl);
+			endFrame();
 		}
 
 		// to also render the other added Programs
