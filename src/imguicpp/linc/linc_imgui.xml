@@ -1,0 +1,54 @@
+<xml>
+
+    <!-- For a more in depth guide: https://github.com/snowkit/hxcpp-guide -->
+    <set name="IMGUI" value="${LINC_IMGUI_PATH}lib/cimgui/imgui" />
+
+    <files id="haxe">
+
+        <!-- add files and flags to the haxe c++ build -->
+
+        <compilerflag value="-I${LINC_IMGUI_PATH}src/imguicpp/linc/"/>
+        <compilerflag value="-I${LINC_IMGUI_PATH}lib/cimgui/imgui/" />
+        <compilerflag value="-I${LINC_IMGUI_PATH}lib/cimgui/imgui/backends/" />
+
+    </files>
+
+    <files id="imgui-sources">
+        <cache value="1" name="imgui" />
+
+        <compilerflag value="-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS"/>
+        <compilerflag value="-I${LINC_IMGUI_PATH}lib/cimgui/imgui/" />
+        <compilerflag value="-I${LINC_IMGUI_PATH}lib/cimgui/imgui/backends/" />
+        
+        <file name="${IMGUI}/imgui.cpp" />
+        <file name="${IMGUI}/imgui_draw.cpp" />
+        <file name="${IMGUI}/imgui_demo.cpp" />
+        <file name="${IMGUI}/imgui_tables.cpp" />
+        <file name="${IMGUI}/imgui_widgets.cpp" />
+
+        <file name="${LINC_IMGUI_PATH}src/imguicpp/linc/linc_imgui.cpp" />
+
+        <section if="linc_sdl">
+            <file name="${IMGUI}/backends/imgui_impl_sdl.cpp" />
+            <compilerflag value="-I${LINC_IMGUI_PATH}../linc_sdl/lib/sdl/include/" />
+        </section>
+
+        <section if="linc_opengl">
+            <section unless="android || ios || tvos">
+                <compilerflag value="-DIMGUI_IMPL_OPENGL_LOADER_GLEW" />
+                <compilerflag value="-I${LINC_IMGUI_PATH}../linc_opengl/lib/glew/include/" />
+            </section>
+            <file name="${IMGUI}/backends/imgui_impl_opengl3.cpp" />
+        </section>
+
+
+    </files>
+
+    <target id="haxe">
+
+        <!-- add linker flags to the haxe build output -->
+        <files id="imgui-sources" />
+
+    </target>
+
+</xml>
