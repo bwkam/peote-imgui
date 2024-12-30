@@ -3,10 +3,8 @@ package;
 import imgui.Helpers.*;
 import imgui.ImGui;
 import lime.graphics.WebGLRenderContext;
-import peote.view.*;
-import peote.view.PeoteGL.Version;
-import peote.view.intern.UniformBufferDisplay;
-import peote.view.intern.UniformBufferView;
+import lime.ui.Window;
+import peote.view.PeoteView;
 
 class ImGuiDisplay {
 	var init:Bool = false;
@@ -19,6 +17,9 @@ class ImGuiDisplay {
 		return untyped window.ImGui_Impl;
 
 	static var io:ImGuiIO = null;
+
+	static var framePending:Bool = false;
+
 
 	static function loadScript(src:String, done:Bool->Void) {
 		var didCallDone = false;
@@ -64,20 +65,32 @@ class ImGuiDisplay {
 	public static function newFrame():Void {
 		ImGui_Impl.NewFrame(haxe.Timer.stamp() * 1000);
 		ImGui.newFrame();
+		framePending = true;
 	}
 
-	public static function endFrame():Void {
+	public static function endFrame(window:Window, peoteView:PeoteView):Void {
+		if (!framePending)
+			return;
+		framePending = false;
+
 		ImGui.endFrame();
 
 		ImGui.render();
 
+		var gl = window.context.webgl;
+		var width = window.width;
+		var height = window.height;
+
+		gl.viewport(0, 0, width, height);
+
 		ImGui_Impl.RenderDrawData(ImGui.getDrawData());
+		peoteView.renderPart();
 
 		// clay.Clay.app.runtime.skipKeyboardEvents = io.wantCaptureKeyboard;
 		// clay.Clay.app.runtime.skipMouseEvents = io.wantCaptureMouse;
 	}
 
-	public static function render():Void {
+	public static function render(peoteView:PeoteView, window:Window):Void {
 		if (ready) {
 			var someFloat = 0.2;
 
@@ -94,7 +107,8 @@ class ImGuiDisplay {
 
 			ImGui.end();
 
-			endFrame();
+			endFrame(window, peoteView);
+
 		}
 
 	}

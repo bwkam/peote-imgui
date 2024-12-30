@@ -1,10 +1,12 @@
 package;
 
 import haxe.CallStack;
+import haxe.io.BufferInput;
 import lime.app.Application;
 import lime.graphics.RenderContext;
 import lime.ui.Window;
 import peote.view.Buffer;
+import peote.view.Color;
 import peote.view.Display;
 import peote.view.PeoteView;
 import peote.view.Program;
@@ -15,6 +17,8 @@ using Lambda;
 
 class Main extends Application {
 	static var peoteView:PeoteView;
+	static var buffer:Buffer<Elem>;
+
 	public function new() {
 		super();
 	}
@@ -45,19 +49,26 @@ class Main extends Application {
 		switch (context.type) {
 			case OPENGL, WEBGL, OPENGLES:
 				{
-					peoteView.renderPart();
-					ImGuiDisplay.render();
+					ImGuiDisplay.render(peoteView, window);
+					// peoteView.renderPart();
 				}
 			default:
 		}
 	}
 
+	// override function update(deltaTime:Int) {
+	// 	ImGuiDisplay.render(peoteView, window);
+	// }
+
 
 	public function startSample(window:Window) {
 		peoteView = new PeoteView(window, false);
 
-		var buffer:Buffer<Elem> = new Buffer<Elem>(4, 4, true);
+		buffer = new Buffer<Elem>(4, 4, true);
 		var program = new Program(buffer);
+
+		var elem = new Elem(0, 0, 10, 10, 0, 0, 0, 0, Color.ORANGE);
+		// buffer.addElement(elem);
 
 		// var guiDisplay = new ImGuiDisplay(0, 0, window.width, window.height);
 		// guiDisplay.addProgram(program);
