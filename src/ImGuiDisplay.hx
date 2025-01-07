@@ -44,12 +44,17 @@ class ImGuiDisplay {
 	}
 
 	public static function loadImGui(done:() -> Void) {
-		Reflect.field(untyped window.ImGui, 'default')().then(function() {
-			initImGui(done);
-		}, function() {
-			trace('Failed to load ImGui bindings');
+		loadScript('assets/imgui.umd.js', function(_) {
+			loadScript('assets/imgui_impl.umd.js', function(_) {
+				Reflect.field(untyped window.ImGui, 'default')().then(function() {
+					initImGui(done);
+				}, function() {
+					trace('Failed to load ImGui bindings');
+				});
+			});
 		});
 	}
+
 
 	static function initImGui(done:() -> Void) {
 		ImGui.createContext();
@@ -81,13 +86,7 @@ class ImGuiDisplay {
 		var width = window.width;
 		var height = window.height;
 
-		gl.viewport(0, 0, width, height);
-
 		ImGui_Impl.RenderDrawData(ImGui.getDrawData());
-		peoteView.renderPart();
-
-		// clay.Clay.app.runtime.skipKeyboardEvents = io.wantCaptureKeyboard;
-		// clay.Clay.app.runtime.skipMouseEvents = io.wantCaptureMouse;
 	}
 
 	public static function render(peoteView:PeoteView, window:Window):Void {
